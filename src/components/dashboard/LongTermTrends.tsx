@@ -165,7 +165,7 @@ function LongTermTrends() {
       .attr('fill', data[0].color)
       .attr('stroke', '#202225')
       .attr('stroke-width', 2)
-      .on('mouseover', function (event, d) {
+      .on('mouseover', function (_event, d) {
         d3.select(this).attr('r', 6);
 
         // Show tooltip

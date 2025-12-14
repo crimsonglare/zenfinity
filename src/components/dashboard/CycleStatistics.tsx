@@ -24,7 +24,7 @@ function CycleStatistics() {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={12} sm={6} {...({} as any)}>
         <MetricCard
           title="Cycle Number"
           value={cycle_number}
@@ -33,7 +33,7 @@ function CycleStatistics() {
         />
       </Grid>
 
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={12} sm={6} {...({} as any)}>
         <MetricCard
           title="Duration"
           value={formatDurationCompact(cycle_duration_hours)}
@@ -43,7 +43,7 @@ function CycleStatistics() {
         />
       </Grid>
 
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={12} sm={6} {...({} as any)}>
         <MetricCard
           title="Start Time"
           value={formatDateTime(cycle_start_time)}
@@ -52,7 +52,7 @@ function CycleStatistics() {
         />
       </Grid>
 
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={12} sm={6} {...({} as any)}>
         <MetricCard
           title="End Time"
           value={formatDateTime(cycle_end_time)}
@@ -61,7 +61,7 @@ function CycleStatistics() {
         />
       </Grid>
 
-      <Grid item xs={12}>
+      <Grid item xs={12} {...({} as any)}>
         <MetricCard
           title="SOH Drop"
           value={soh_drop.toFixed(2)}

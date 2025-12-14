@@ -15,7 +15,7 @@ function ChargingInsights() {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
+      <Grid item xs={12} {...({} as any)}>
         <MetricCard
           title="Charging Instances"
           value={charging_instances_count}
@@ -25,7 +25,7 @@ function ChargingInsights() {
         />
       </Grid>
 
-      <Grid item xs={12}>
+      <Grid item xs={12} {...({} as any)}>
         <MetricCard
           title="Avg. Charge Start SOC"
           value={average_charge_start_soc.toFixed(1)}

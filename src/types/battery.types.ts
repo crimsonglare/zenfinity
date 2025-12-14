@@ -38,7 +38,9 @@ export interface BatterySummary {
 }
 
 export interface BatterySummaryResponse {
-  batteries: BatterySummary[];
+  batteries?: BatterySummary[];
+  summary?: BatterySummary[];
+  data?: BatterySummary[];
 }
 
 export type TemperatureSamplingRate = 5 | 10 | 15 | 20;

@@ -81,9 +81,9 @@ export const useBatteryStore = create<BatteryStore>((set, get) => ({
     try {
       const response = await batteryService.getCycleDetails(imei, cycle);
       // Handle nested data structure from API
-      const cycleData = response.data.data || response.data;
+      const cycleData = (response.data as any).data || response.data;
       set({
-        currentCycleData: cycleData,
+        currentCycleData: cycleData as CycleSnapshot,
         isLoading: false
       });
     } catch (error) {
@@ -101,10 +101,10 @@ export const useBatteryStore = create<BatteryStore>((set, get) => ({
     try {
       // Fetch a large number of cycles (adjust limit as needed)
       const response = await batteryService.getCycles(imei, 1000);
-      // API returns { success: true, data: [...], count: X }
-      const cyclesData = response.data.data || response.data || [];
+      // API returns { success: true, data: [...], count: X } or array directly
+      const cyclesData = (response.data as any).data || (Array.isArray(response.data) ? response.data : []);
       set({
-        allCycles: cyclesData
+        allCycles: cyclesData as CycleSnapshot[]
       });
     } catch (error) {
       console.error('Failed to fetch all cycles:', error);

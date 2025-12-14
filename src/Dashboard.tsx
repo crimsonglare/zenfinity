@@ -74,12 +74,12 @@ function Dashboard() {
           <Container maxWidth="xl">
             <Grid container spacing={3}>
               {/* Cycle Navigator */}
-              <Grid item xs={12}>
+              <Grid item xs={12} {...({} as any)}>
                 <CycleNavigator />
               </Grid>
 
               {/* Row 1: Cycle Statistics + Alerts */}
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={6} {...({} as any)}>
                 <Card sx={{ backgroundColor: '#202225', height: '100%' }}>
                   <CardContent>
                     <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
@@ -89,12 +89,12 @@ function Dashboard() {
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={6} {...({} as any)}>
                 <AlertsPanel />
               </Grid>
 
               {/* Row 2: Performance Metrics + Charging Insights */}
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={6} {...({} as any)}>
                 <Card sx={{ backgroundColor: '#202225', height: '100%' }}>
                   <CardContent>
                     <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
@@ -104,7 +104,7 @@ function Dashboard() {
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={6} {...({} as any)}>
                 <Card sx={{ backgroundColor: '#202225', height: '100%' }}>
                   <CardContent>
                     <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
@@ -116,17 +116,17 @@ function Dashboard() {
               </Grid>
 
               {/* Row 3: Battery Health */}
-              <Grid item xs={12}>
+              <Grid item xs={12} {...({} as any)}>
                 <BatteryHealth />
               </Grid>
 
               {/* Row 4: Temperature Distribution */}
-              <Grid item xs={12}>
+              <Grid item xs={12} {...({} as any)}>
                 <TemperatureDistribution />
               </Grid>
 
               {/* Row 5: Long-term Trends (Bonus) */}
-              <Grid item xs={12}>
+              <Grid item xs={12} {...({} as any)}>
                 <LongTermTrends />
               </Grid>
             </Grid>

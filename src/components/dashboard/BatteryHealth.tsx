@@ -36,16 +36,21 @@ function BatteryHealth() {
 
       // Create arc generator for background
       const arc = d3
-        .arc<d3.PieArcDatum<number>>()
+        .arc()
         .innerRadius(radius - 20)
         .outerRadius(radius)
         .startAngle(0)
         .endAngle(2 * Math.PI);
 
       // Background arc
+      const backgroundArc = arc({
+        startAngle: 0,
+        endAngle: 2 * Math.PI,
+        innerRadius: radius - 20,
+        outerRadius: radius,
+      } as any);
       g.append('path')
-        .datum([1])
-        .attr('d', arc)
+        .attr('d', backgroundArc || '')
         .attr('fill', '#2f3136')
         .attr('stroke', '#404249')
         .attr('stroke-width', 2);
@@ -55,7 +60,7 @@ function BatteryHealth() {
       const socAngle = (socValue / 100) * 2 * Math.PI - Math.PI / 2;
 
       const socArc = d3
-        .arc<d3.PieArcDatum<number>>()
+        .arc()
         .innerRadius(radius - 20)
         .outerRadius(radius)
         .startAngle(-Math.PI / 2)
@@ -71,9 +76,14 @@ function BatteryHealth() {
           ? '#f97316'
           : '#ed4245';
 
+      const socArcPath = socArc({
+        startAngle: -Math.PI / 2,
+        endAngle: socAngle,
+        innerRadius: radius - 20,
+        outerRadius: radius,
+      } as any);
       g.append('path')
-        .datum([1])
-        .attr('d', socArc)
+        .attr('d', socArcPath || '')
         .attr('fill', socColor)
         .attr('opacity', 0.8);
 
@@ -155,24 +165,28 @@ function BatteryHealth() {
 
       // SOH Drop bar
       const color = sohDrop > 1 ? '#ed4245' : sohDrop > 0.5 ? '#faa61a' : '#3ba55d';
-      g.append('rect')
-        .attr('x', 0)
-        .attr('y', yScale('SOH Drop'))
-        .attr('width', xScale(sohDrop))
-        .attr('height', yScale.bandwidth())
-        .attr('fill', color)
-        .attr('rx', 4)
-        .attr('opacity', 0.8);
+      const yPos = yScale('SOH Drop');
+      const bandwidth = yScale.bandwidth();
+      if (yPos !== undefined && bandwidth !== undefined) {
+        g.append('rect')
+          .attr('x', 0)
+          .attr('y', yPos)
+          .attr('width', xScale(sohDrop))
+          .attr('height', bandwidth)
+          .attr('fill', color)
+          .attr('rx', 4)
+          .attr('opacity', 0.8);
 
-      // Value label
-      g.append('text')
-        .attr('x', xScale(sohDrop) + 10)
-        .attr('y', yScale('SOH Drop') + yScale.bandwidth() / 2)
-        .attr('dy', '0.35em')
-        .attr('fill', '#dcddde')
-        .attr('font-size', '14px')
-        .attr('font-weight', '600')
-        .text(`${sohDrop.toFixed(3)}%`);
+        // Value label
+        g.append('text')
+          .attr('x', xScale(sohDrop) + 10)
+          .attr('y', yPos + bandwidth / 2)
+          .attr('dy', '0.35em')
+          .attr('fill', '#dcddde')
+          .attr('font-size', '14px')
+          .attr('font-weight', '600')
+          .text(`${sohDrop.toFixed(3)}%`);
+      }
 
       // X-axis
       const xAxis = d3.axisBottom(xScale).ticks(5);
@@ -215,14 +229,14 @@ function BatteryHealth() {
 
         <Grid container spacing={3}>
           {/* SOC Metrics */}
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={4} {...({} as any)}>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 2, fontWeight: 600 }}>
                 State of Charge (SOC)
               </Typography>
               <svg ref={socChartRef}></svg>
               <Grid container spacing={2} sx={{ mt: 2, width: '100%' }}>
-                <Grid item xs={6}>
+                <Grid item xs={6} {...({} as any)}>
                   <MetricCard
                     title="Min SOC"
                     value={min_soc.toFixed(1)}
@@ -231,7 +245,7 @@ function BatteryHealth() {
                     color="#ed4245"
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={6} {...({} as any)}>
                   <MetricCard
                     title="Max SOC"
                     value={max_soc.toFixed(1)}
@@ -245,7 +259,7 @@ function BatteryHealth() {
           </Grid>
 
           {/* SOH Visualization */}
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12} md={8} {...({} as any)}>
             <Box>
               <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 2, fontWeight: 600 }}>
                 State of Health (SOH) Degradation
@@ -254,7 +268,7 @@ function BatteryHealth() {
                 <svg ref={sohChartRef}></svg>
               </Box>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={4} {...({} as any)}>
                   <MetricCard
                     title="SOH Drop"
                     value={soh_drop.toFixed(3)}
@@ -270,7 +284,7 @@ function BatteryHealth() {
                     }
                   />
                 </Grid>
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={4} {...({} as any)}>
                   <MetricCard
                     title="SOC Range"
                     value={(max_soc - min_soc).toFixed(1)}
@@ -280,7 +294,7 @@ function BatteryHealth() {
                     subtitle={`${min_soc.toFixed(1)}% - ${max_soc.toFixed(1)}%`}
                   />
                 </Grid>
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={4} {...({} as any)}>
                   <MetricCard
                     title="SOC Utilization"
                     value={average_soc.toFixed(1)}

@@ -16,7 +16,7 @@ function PerformanceMetrics() {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
+      <Grid item xs={12} {...({} as any)}>
         <MetricCard
           title="Average Speed"
           value={average_speed.toFixed(1)}
@@ -26,7 +26,7 @@ function PerformanceMetrics() {
         />
       </Grid>
 
-      <Grid item xs={12}>
+      <Grid item xs={12} {...({} as any)}>
         <MetricCard
           title="Total Distance"
           value={total_distance.toFixed(2)}
@@ -37,7 +37,7 @@ function PerformanceMetrics() {
         />
       </Grid>
 
-      <Grid item xs={12}>
+      <Grid item xs={12} {...({} as any)}>
         <MetricCard
           title="Max Speed"
           value={max_speed.toFixed(1)}

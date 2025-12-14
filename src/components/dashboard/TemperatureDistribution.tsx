@@ -101,7 +101,7 @@ function TemperatureDistribution() {
       .attr('fill', (d) => getColor(d.range))
       .attr('rx', 4)
       .attr('opacity', 0.8)
-      .on('mouseover', function (event, d) {
+      .on('mouseover', function (_event, d) {
         d3.select(this).attr('opacity', 1);
         // Show tooltip
         const tooltip = g
