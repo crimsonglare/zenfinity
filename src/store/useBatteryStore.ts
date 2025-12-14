@@ -38,11 +38,22 @@ export const useBatteryStore = create<BatteryStore>((set, get) => ({
   temperatureSamplingRate: 5,
 
   // Actions
-  setSelectedIMEI: (imei) => {
-    set({ selectedIMEI: imei, selectedCycle: 1, currentCycleData: null });
-    // Automatically fetch data for the new IMEI
-    get().fetchCycleData(imei, 1);
-    get().fetchAllCycles(imei);
+  setSelectedIMEI: async (imei) => {
+    set({ selectedIMEI: imei, currentCycleData: null });
+    // First fetch all cycles to get the actual cycle numbers
+    await get().fetchAllCycles(imei);
+    // Then set the selected cycle to the first available cycle
+    const cycles = get().allCycles;
+    if (cycles.length > 0) {
+      const firstCycle = Math.min(...cycles.map(c => c.cycle_number));
+      set({ selectedCycle: firstCycle });
+      // Fetch data for the first cycle
+      get().fetchCycleData(imei, firstCycle);
+    } else {
+      // Fallback if no cycles found
+      set({ selectedCycle: 1 });
+      get().fetchCycleData(imei, 1);
+    }
   },
 
   setSelectedCycle: (cycle) => {
@@ -103,9 +114,24 @@ export const useBatteryStore = create<BatteryStore>((set, get) => ({
       const response = await batteryService.getCycles(imei, 1000);
       // API returns { success: true, data: [...], count: X } or array directly
       const cyclesData = (response.data as any).data || (Array.isArray(response.data) ? response.data : []);
+      const cycles = cyclesData as CycleSnapshot[];
       set({
-        allCycles: cyclesData as CycleSnapshot[]
+        allCycles: cycles
       });
+      
+      // If no cycle is selected yet, or selected cycle doesn't exist, set to first available
+      const currentCycle = get().selectedCycle;
+      if (cycles.length > 0) {
+        const cycleNumbers = cycles.map(c => c.cycle_number);
+        const minCycle = Math.min(...cycleNumbers);
+        
+        // If current cycle is not in the available cycles, set to first cycle
+        if (!cycleNumbers.includes(currentCycle)) {
+          set({ selectedCycle: minCycle });
+          // Fetch data for the first cycle
+          get().fetchCycleData(imei, minCycle);
+        }
+      }
     } catch (error) {
       console.error('Failed to fetch all cycles:', error);
       set({

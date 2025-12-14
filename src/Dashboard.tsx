@@ -14,12 +14,12 @@ import { useBatteryStore } from './store/useBatteryStore';
 const DRAWER_WIDTH = 240;
 
 function Dashboard() {
-  const { currentCycleData, isLoading, error, fetchSummary, fetchCycleData, fetchAllCycles, selectedIMEI, selectedCycle } = useBatteryStore();
+  const { currentCycleData, isLoading, error, fetchSummary, fetchAllCycles, selectedIMEI } = useBatteryStore();
 
   useEffect(() => {
     // Initial data fetch
     fetchSummary();
-    fetchCycleData(selectedIMEI, selectedCycle);
+    // Fetch all cycles first, which will automatically set the correct initial cycle
     fetchAllCycles(selectedIMEI);
   }, []);
 
