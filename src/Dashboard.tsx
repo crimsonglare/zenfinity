@@ -16,12 +16,17 @@ const DRAWER_WIDTH = 240;
 function Dashboard() {
   const { currentCycleData, isLoading, error, fetchSummary, fetchAllCycles, selectedIMEI } = useBatteryStore();
 
+  // Effect 1: Load summary once on mount
   useEffect(() => {
-    // Initial data fetch
     fetchSummary();
-    // Fetch all cycles first, which will automatically set the correct initial cycle
-    fetchAllCycles(selectedIMEI);
-  }, []);
+  }, [fetchSummary]);
+
+  // Effect 2: Load cycles when battery changes
+  useEffect(() => {
+    if (selectedIMEI) {
+      fetchAllCycles(selectedIMEI);
+    }
+  }, [selectedIMEI, fetchAllCycles]);
 
   return (
     <Box sx={{ display: 'flex' }}>

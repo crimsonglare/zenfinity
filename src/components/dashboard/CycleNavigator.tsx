@@ -1,27 +1,61 @@
-import { Card, CardContent, Typography, Slider, Box, IconButton } from '@mui/material';
+import { Card, CardContent, Typography, Slider, Box, IconButton, CircularProgress } from '@mui/material';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { useBatteryStore } from '../../store/useBatteryStore';
 
 function CycleNavigator() {
-  const { selectedCycle, setSelectedCycle, allCycles } = useBatteryStore();
+  const { selectedCycle, setSelectedCycle, allCycles, isLoading } = useBatteryStore();
 
-  const maxCycle = allCycles.length > 0 ? Math.max(...allCycles.map(c => c.cycle_number)) : 100;
-  const minCycle = allCycles.length > 0 ? Math.min(...allCycles.map(c => c.cycle_number)) : 1;
+  // Handle empty/loading state - prevents misleading "Cycle 1 of 100"
+  if (allCycles.length === 0) {
+    return (
+      <Card sx={{ backgroundColor: '#202225' }}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+            Cycle Navigator
+          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+            {isLoading ? (
+              <CircularProgress size={24} />
+            ) : (
+              <Typography color="text.secondary">
+                No cycle data available
+              </Typography>
+            )}
+          </Box>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Get sorted list of available cycle numbers
+  const availableCycles = allCycles.map(c => c.cycle_number).sort((a, b) => a - b);
+  const maxCycle = availableCycles[availableCycles.length - 1];
+  const minCycle = availableCycles[0];
+
+  // Find current cycle index in available cycles
+  const currentIndex = availableCycles.indexOf(selectedCycle);
 
   const handleSliderChange = (_event: Event, newValue: number | number[]) => {
-    setSelectedCycle(newValue as number);
+    const targetCycle = newValue as number;
+    // Find the closest available cycle
+    const closest = availableCycles.reduce((prev, curr) =>
+      Math.abs(curr - targetCycle) < Math.abs(prev - targetCycle) ? curr : prev
+    );
+    setSelectedCycle(closest);
   };
 
   const handlePrevious = () => {
-    if (selectedCycle > minCycle) {
-      setSelectedCycle(selectedCycle - 1);
+    // Go to previous available cycle
+    if (currentIndex > 0) {
+      setSelectedCycle(availableCycles[currentIndex - 1]);
     }
   };
 
   const handleNext = () => {
-    if (selectedCycle < maxCycle) {
-      setSelectedCycle(selectedCycle + 1);
+    // Go to next available cycle
+    if (currentIndex < availableCycles.length - 1) {
+      setSelectedCycle(availableCycles[currentIndex + 1]);
     }
   };
 
@@ -89,8 +123,7 @@ function CycleNavigator() {
           textAlign="center"
           sx={{ mt: 2 }}
         >
-          Cycle {selectedCycle} of {maxCycle}
-          {allCycles.length > 0 && ` (${allCycles.length} cycles loaded)`}
+          Cycle {selectedCycle} ({currentIndex + 1} of {availableCycles.length} available cycles)
         </Typography>
       </CardContent>
     </Card>

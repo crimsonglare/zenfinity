@@ -1,8 +1,12 @@
 import axios from 'axios';
 
 // Create axios instance with base configuration
+// In development, use empty baseURL to leverage Vite proxy
+// In production, use full API URL
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://zenfinity-intern-api-104290304048.europe-west1.run.app',
+  baseURL: import.meta.env.MODE === 'development'
+    ? ''
+    : (import.meta.env.VITE_API_BASE_URL || 'https://zenfinity-intern-api-104290304048.europe-west1.run.app'),
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
